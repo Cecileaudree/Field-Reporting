@@ -1,52 +1,49 @@
 {
   "expo": {
-    "name": "journal-de-bord", 
-    "slug": "journal-de-bord", 
-    "version": "1.0.0", 
-    "orientation": "portrait", 
-    "icon": "./assets/icon.png", 
-    "userInterfaceStyle": "light", 
-    "splash": { 
-      "image": "./assets/splash.png", 
-      "resizeMode": "contain", 
-      "backgroundColor": "#ffffff" 
+    "name": "journal-de-bord",
+    "slug": "journal-de-bord",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
     },
-     "assetBundlePatterns": [ 
-      "**/*" 
-    ], 
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },
     "android": {
-       "adaptiveIcon": { 
-        "foregroundImage": "./assets/adaptive-icon.png", 
-        "backgroundColor": "#ffffff" 
-      } ,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
       "predictiveBackGestureEnabled": false
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": [ 
-      [ 
-        "expo-camera", 
-        { 
-          "cameraPermission": "L'application a besoin d'accéder à votre caméra pour le journal de bord." 
-        } 
-      ], 
-      [ 
-        "expo-location", 
-        { 
-          "locationAlwaysAndWhenInUsePermission": "L'application a besoin de votre position pour géolocaliser vos notes." 
-        } 
-      ], 
-      [ 
-        "expo-calendar", 
-          { 
-            "calendarPermission": "L'application a besoin d'accéder à votre calendrier pour ajouter des événements." 
-        } 
-      ] 
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Accès requis pour prouver l'incident."
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Requis pour certifier le lieu."
+        }
+      ],
+      [
+        "expo-calendar",
+        {
+          "calendarPermission": "Requis pour planifier le suivi."
+        }
+      ]
     ]
-
   }
 }
