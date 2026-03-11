@@ -9,16 +9,18 @@ import {
   TextInput,
   ActivityIndicator,
   Alert,
+  Vibration
 } from "react-native";
 
 import { CameraCapture } from "../components/cameraCapture";
 import { LocationMap } from "../components/locationMap";
-import { submitJournalEntry } from "../services/api";
-import { Coordinates, JournalEntry } from "../types";
+import { submitIncident } from "../services/api";
+import { Coordinates, Incident } from "../types";
 
 import * as Calendar from "expo-calendar";
 
 export const JournalFormScreen: React.FC = () => {
+
   const [photoUri, setPhotoUri] = useState<string | null>(null);
   const [description, setDescription] = useState("");
   const [location, setLocation] = useState<Coordinates | null>(null);
@@ -31,6 +33,7 @@ export const JournalFormScreen: React.FC = () => {
   };
 
   const addEventToCalendar = async () => {
+
     const { status } = await Calendar.requestCalendarPermissionsAsync();
 
     if (status !== "granted") {
@@ -39,10 +42,12 @@ export const JournalFormScreen: React.FC = () => {
     }
 
     const calendars = await Calendar.getCalendarsAsync(
-      Calendar.EntityTypes.EVENT,
+      Calendar.EntityTypes.EVENT
     );
 
-    const writableCalendar = calendars.find((cal) => cal.allowsModifications);
+    const writableCalendar = calendars.find(
+      (cal) => cal.allowsModifications
+    );
 
     if (!writableCalendar) {
       Alert.alert("Erreur", "Aucun calendrier disponible.");
@@ -53,43 +58,58 @@ export const JournalFormScreen: React.FC = () => {
     const endDate = new Date(startDate.getTime() + 60 * 60 * 1000);
 
     await Calendar.createEventAsync(writableCalendar.id, {
-      title: "Nouvelle Entrée Journal",
+      title: "🔧 Suivi Intervention",
       notes: description,
       location: `${location?.latitude}, ${location?.longitude}`,
       startDate,
-      endDate,
+      endDate
     });
   };
 
   const handleSubmit = async () => {
+
     if (!photoUri || !location) {
       Alert.alert(
         "Formulaire incomplet",
-        "Veuillez prendre une photo et récupérer votre position.",
+        "Veuillez prendre une photo et récupérer votre position."
       );
       return;
     }
 
-    const entry: JournalEntry = {
+    const incident: Incident = {
       description,
       photoUri,
       location,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     };
 
     try {
+
       setLoading(true);
 
-      const response = await submitJournalEntry(entry);
+      const response = await submitIncident(incident);
+
+      // Affiche l'objet retourné par le serveur (ID: 101)
+      console.log("Réponse serveur :", response.data);
 
       if (response.success) {
+
         await addEventToCalendar();
 
-        Alert.alert("Succès", "Entrée sauvegardée !");
+        // Vibration bonus de confirmation
+        Vibration.vibrate([0, 200, 100, 200]);
+
+        Alert.alert("✅ Signalement envoyé", "L'incident a été transmis et un suivi a été ajouté à votre agenda.");
         resetForm();
+
+      } else {
+        Alert.alert("Erreur serveur", response.error ?? "Erreur inconnue.");
       }
-    } catch (error) {
-      Alert.alert("Erreur", "Impossible de sauvegarder l'entrée.");
+
+    } catch (error: any) {
+
+      Alert.alert("Erreur réseau", error?.message ?? "Impossible de contacter le serveur.");
+
     } finally {
       setLoading(false);
     }
@@ -97,7 +117,8 @@ export const JournalFormScreen: React.FC = () => {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.header}>Mon Journal de Bord</Text>
+
+      <Text style={styles.header}>Signalement Municipal</Text>
 
       <Text style={styles.label}>1. Preuve Photographique</Text>
 
@@ -131,45 +152,47 @@ export const JournalFormScreen: React.FC = () => {
       />
 
       <TouchableOpacity
-        style={styles.saveButton}
+        style={[styles.saveButton, (!photoUri || !location) && styles.disabledButton]}
         onPress={handleSubmit}
-        disabled={loading}
+        disabled={!photoUri || !location || loading}
       >
         {loading ? (
           <ActivityIndicator color="white" />
         ) : (
-          <Text style={styles.buttonText}>Sauvegarder</Text>
+          <Text style={styles.buttonText}>Envoyer le Signalement</Text>
         )}
       </TouchableOpacity>
+
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
+
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    padding: 20,
+    padding: 20
   },
 
   header: {
     fontSize: 26,
     fontWeight: "bold",
     textAlign: "center",
-    marginVertical: 20,
+    marginVertical: 20
   },
 
   label: {
     fontSize: 18,
     fontWeight: "bold",
     marginTop: 20,
-    marginBottom: 10,
+    marginBottom: 10
   },
 
   image: {
     width: "100%",
     height: 300,
-    borderRadius: 10,
+    borderRadius: 10
   },
 
   input: {
@@ -178,7 +201,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 10,
     height: 100,
-    textAlignVertical: "top",
+    textAlignVertical: "top"
   },
 
   saveButton: {
@@ -186,7 +209,12 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 10,
     marginTop: 20,
-    alignItems: "center",
+    marginBottom: 30,
+    alignItems: "center"
+  },
+
+  disabledButton: {
+    backgroundColor: "#aaa",
   },
 
   secondaryButton: {
@@ -194,11 +222,12 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 8,
     marginTop: 10,
-    alignItems: "center",
+    alignItems: "center"
   },
 
   buttonText: {
     color: "white",
-    fontWeight: "bold",
-  },
+    fontWeight: "bold"
+  }
+
 });

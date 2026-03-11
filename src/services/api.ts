@@ -1,29 +1,28 @@
-import { JournalEntry, ApiResponse } from "../types";
+import axios from "axios";
+import { Incident, ApiResponse } from "../types";
 
-export const submitJournalEntry = async (
-  entry: JournalEntry,
-): Promise<ApiResponse<JournalEntry>> => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const successRate = Math.random();
+// Instance Axios centralisée
+const apiClient = axios.create({
+  baseURL: "https://jsonplaceholder.typicode.com",
+  timeout: 10000,
+  headers: { "Content-Type": "application/json" },
+});
 
-      // 90% de succès
-      if (successRate < 0.9) {
-        const savedEntry: JournalEntry = {
-          ...entry,
-          id: Math.random().toString(36).substring(2, 9), // faux ID
-        };
-
-        resolve({
-          success: true,
-          data: savedEntry,
-        });
-      } else {
-        reject({
-          success: false,
-          error: "Erreur serveur simulée (HTTP 500)",
-        });
-      }
-    }, 1500);
-  });
+// Envoie un incident signalé au serveur (POST /posts)
+export const submitIncident = async (
+  data: Incident
+): Promise<ApiResponse<Incident>> => {
+  try {
+    const response = await apiClient.post("/posts", data);
+    // Axios encapsule la réponse dans .data
+    return {
+      success: true,
+      data: response.data as Incident,
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      error: error?.message ?? "Erreur réseau inconnue",
+    };
+  }
 };

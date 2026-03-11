@@ -1,10 +1,10 @@
-// Interface pour les coordonnées géographiques
+// Coordonnées géographiques
 export interface Coordinates {
   latitude: number;
   longitude: number;
 }
 
-// Interface pour une entrée du journal
+// Incident signalé par l'agent
 export interface Incident {
   id?: string;
   description: string;
@@ -13,9 +13,9 @@ export interface Incident {
   timestamp: number;
 }
 
-// Type générique pour les réponses d'API
+// Réponse générique de l'API
 export interface ApiResponse<T> {
   success: boolean;
-  data: T;
+  data?: T;
   error?: string;
 }
