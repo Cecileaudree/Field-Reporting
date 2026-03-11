@@ -5,11 +5,11 @@ export interface Coordinates {
 }
 
 // Interface pour une entrée du journal
-export interface JournalEntry {
+export interface Incident {
   id?: string;
   description: string;
-  photoUri: string | null;
-  location: Coordinates | null;
+  photoUri: string;
+  location: Coordinates;
   timestamp: number;
 }
 
@@ -17,5 +17,5 @@ export interface JournalEntry {
 export interface ApiResponse<T> {
   success: boolean;
   data: T;
-  message?: string;
+  error?: string;
 }

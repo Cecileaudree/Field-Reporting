@@ -2,26 +2,25 @@ import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
-import { Coordinates } from "../types/indesx";
+import { Coordinates } from "../types";
 
 interface LocationMapProps {
   onLocationFound: (coords: Coordinates) => void;
 }
 
-export const LocationMap: React.FC<LocationMapProps> = ({ onLocationFound }) => {
+export const LocationMap: React.FC<LocationMapProps> = ({
+  onLocationFound,
+}) => {
   const [location, setLocation] = useState<Coordinates | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   useEffect(() => {
     const getLocation = async () => {
       // Demande de permission
-      const { status } =
-        await Location.requestForegroundPermissionsAsync();
+      const { status } = await Location.requestForegroundPermissionsAsync();
 
       if (status !== "granted") {
-        setErrorMsg(
-          "La permission d'accéder à la localisation a été refusée."
-        );
+        setErrorMsg("La permission d'accéder à la localisation a été refusée.");
         return;
       }
 
