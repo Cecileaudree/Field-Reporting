@@ -64,6 +64,7 @@ export const JournalFormScreen: React.FC = () => {
       startDate,
       endDate
     });
+
   };
 
   const handleSubmit = async () => {
@@ -111,11 +112,15 @@ export const JournalFormScreen: React.FC = () => {
       Alert.alert("Erreur réseau", error?.message ?? "Impossible de contacter le serveur.");
 
     } finally {
+
       setLoading(false);
+
     }
+
   };
 
   return (
+
     <ScrollView style={styles.container}>
 
       <Text style={styles.header}>Signalement Municipal</Text>
@@ -124,7 +129,11 @@ export const JournalFormScreen: React.FC = () => {
 
       {photoUri ? (
         <View>
-          <Image source={{ uri: photoUri }} style={styles.image} />
+
+          <Image
+            source={{ uri: photoUri }}
+            style={styles.image}
+          />
 
           <TouchableOpacity
             style={styles.secondaryButton}
@@ -132,6 +141,7 @@ export const JournalFormScreen: React.FC = () => {
           >
             <Text style={styles.buttonText}>Reprendre la photo</Text>
           </TouchableOpacity>
+
         </View>
       ) : (
         <CameraCapture onPictureTaken={setPhotoUri} />
@@ -145,8 +155,8 @@ export const JournalFormScreen: React.FC = () => {
 
       <TextInput
         style={styles.input}
-        multiline
         placeholder="Décrivez votre événement..."
+        multiline
         value={description}
         onChangeText={setDescription}
       />
@@ -156,14 +166,17 @@ export const JournalFormScreen: React.FC = () => {
         onPress={handleSubmit}
         disabled={!photoUri || !location || loading}
       >
+
         {loading ? (
           <ActivityIndicator color="white" />
         ) : (
           <Text style={styles.buttonText}>Envoyer le Signalement</Text>
         )}
+
       </TouchableOpacity>
 
     </ScrollView>
+
   );
 };
 

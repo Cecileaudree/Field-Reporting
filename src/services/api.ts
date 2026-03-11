@@ -1,28 +1,48 @@
 import axios from "axios";
 import { Incident, ApiResponse } from "../types";
 
-// Instance Axios centralisée
-const apiClient = axios.create({
-  baseURL: "https://jsonplaceholder.typicode.com",
-  timeout: 10000,
-  headers: { "Content-Type": "application/json" },
-});
-
-// Envoie un incident signalé au serveur (POST /posts)
 export const submitIncident = async (
-  data: Incident
+  incident: Incident
 ): Promise<ApiResponse<Incident>> => {
+
   try {
-    const response = await apiClient.post("/posts", data);
-    // Axios encapsule la réponse dans .data
-    return {
-      success: true,
-      data: response.data as Incident,
-    };
-  } catch (error: any) {
+
+    // simulation délai réseau
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+
+    const successRate = Math.random();
+
+    if (successRate < 0.9) {
+
+      const savedIncident: Incident = {
+        ...incident,
+        id: Math.random().toString(36).substring(2, 9)
+      };
+
+      // simulation requête axios
+      const response = await axios.post(
+        "https://jsonplaceholder.typicode.com/posts",
+        savedIncident
+      );
+
+      return {
+        success: true,
+        data: savedIncident
+      };
+
+    } else {
+
+      throw new Error("Erreur HTTP 500 simulée");
+
+    }
+
+  } catch (error) {
+
     return {
       success: false,
-      error: error?.message ?? "Erreur réseau inconnue",
+      error: "Erreur serveur simulée"
     };
+
   }
+
 };
